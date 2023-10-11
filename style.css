@@ -1,0 +1,111 @@
+* {
+  font-family: "Do Hyeon", sans-serif;
+}
+body {
+  background-color: rgb(231, 247, 235);
+}
+
+h1 {
+  text-align: center;
+
+  animation: blink;   
+  animation-duration: 3s;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-in-out;
+  animation-direction: alternate;
+}
+@keyframes blink {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.todo-input-box {
+  margin: 50px auto 40px;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+.todo-input-btn {
+  cursor: pointer;
+}
+.todo-list {
+  margin: 0px auto;
+  display: flex;
+  /* 자식요소들간의 간격 */
+  gap: 15px;
+  /* 중앙정렬 */
+  justify-content: center;
+  /* align-content는 flex-wrap와 같이 써야 되고
+  요소와 요소사이의 간격을 가운데를 기준으로의 설정을 
+  믜미한다. */
+  flex-wrap: wrap;
+  align-content: space-around;
+
+  height: auto;
+}
+.todo-item {
+  border: 4px solid black;
+  border-radius: 12px;
+  padding: 12px 20px 15px;
+  width: 270px;
+  /* height: 210px; */
+}
+.todo-item-top {
+  display: flex;
+}
+.todo-create-date {
+  width: 50%;
+  font-size: 12px;
+}
+.element-delete {
+  border: none;
+  border-radius: 8px;
+  /* 배경을 투명하게 */
+  background-color: transparent;
+  /* opacity: 0; -> 전체 투명도 조절(내용까지) */
+  margin-left: 50%;
+  cursor: pointer;
+}
+
+.todo-title {
+  font-weight: bold;
+  /* 테두리는 삭제 예정 */
+  border: 2px solid rgb(211, 197, 197);
+  border-radius: 10px;
+
+  width: 250px;
+  height: 20px;
+  margin: 20px 5px;
+
+  /* 내부 텍스트의 위치를 조정 */
+  padding: 5px 5px;
+}
+
+.todo-memo {
+  border: 2px solid black;
+  border-radius: 10px;
+
+  margin: 0px 4px;
+  width: 240px;
+  height: 100px;
+
+  /* 내부 텍스트의 위치 조정 */
+  padding: 5px 10px;
+}
+
+.footer {
+  margin: 30px auto;
+  padding: auto;
+  display: flex;
+  justify-content: center;
+}
+.all-delete {
+  cursor: pointer;
+}

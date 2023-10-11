@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>STUDY 01</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap');
+    </style>
+  </head>
+  <body>
+    <h1>🐰 TO DO LIST 🥕</h1>
+    <!-- todo입력 구현 -->
+    <div class="todo-wrapper">
+      <!-- 할일입력 -->
+      <div class="todo-input-box">
+        <div class="title-input-box">
+          <label class="input-title">Title</label>
+          <input class="todo-title-input" type="text" placeholder="할 일을 입력하세요." maxlength=15/>
+        </div>
+               
+        <div class="memo-input-box">
+          <label class="input-title">Memo</label>
+          <input class="todo-memo-input" type="text" placeholder="20자 내외로 작성하세요." maxlength=20></input>
+        </div>
+        
+        <button class="todo-input-btn">입력</button>
+      </div>
+
+      <!-- 할일출력 -->
+      <div class="todo-list">
+        <div class="todo-item">
+
+          <div class="todo-item-top">
+            <div class="todo-create-date"></div> 
+            <button class="element-delete">🗑️</button>
+          </div>
+
+          <div class="todo-title"></div>
+          <div class="todo-memo"></div>
+        </div>
+      </div>
+
+      <!-- 부가기능 -->
+      <div class="footer">
+        <button class="all-delete">모두 삭제</button>
+      </div>
+    </div>
+
+    <script src="index.js"></script>
+  </body>
+</html>
