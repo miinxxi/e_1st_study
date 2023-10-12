@@ -22,6 +22,11 @@ function createTodo(e) {
   const titleInputVal = titleInput.value; // 할일값
   const memoInputVal = memoInput.value; // 메모값
 
+  // 삭제 구현시 필요
+  const wrapper = document.querySelector('.todo-wrapper') // 전체 warpper div
+  const btnAll = document.querySelector(".all-delete"); // 전체 삭제btn
+
+  // 요소 만들기
   const divEl_item = document.createElement("div"); // todo-item
   const divEl_itemTop = document.createElement("div"); // todo-item-top
   const dateEl = document.createElement("div"); // date
@@ -40,6 +45,11 @@ function createTodo(e) {
     divEl_item.classList.add("todo-item");
     todoListBox.appendChild(divEl_item);
 
+    // todo 일괄 삭제 ✔️
+    btnAll.addEventListener("click", ()=>{
+      wrapper.removeChild(todoListBox)
+    })
+
     // item bot top
     divEl_itemTop.classList.add("todo-item-top");
     divEl_item.appendChild(divEl_itemTop);
@@ -53,6 +63,11 @@ function createTodo(e) {
     btnEl.classList.add("element-delete");
     btnEl.textContent = "🗑️";
     divEl_itemTop.appendChild(btnEl);
+
+    // todo 단일 삭제 ✔️
+    btnEl.addEventListener("click", () => {
+      todoListBox.removeChild(divEl_item);
+    });
 
     // title
     divEl_title.classList.add("todo-title");
