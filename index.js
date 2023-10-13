@@ -23,7 +23,7 @@ function createTodo(e) {
   const memoInputVal = memoInput.value; // 메모값
 
   // 삭제 구현시 필요
-  const wrapper = document.querySelector('.todo-wrapper') // 전체 warpper div
+  const wrapper = document.querySelector(".todo-wrapper"); // 전체 warpper div
   const btnAll = document.querySelector(".all-delete"); // 전체 삭제btn
 
   // 요소 만들기
@@ -46,9 +46,16 @@ function createTodo(e) {
     todoListBox.appendChild(divEl_item);
 
     // todo 일괄 삭제 ✔️
-    btnAll.addEventListener("click", ()=>{
-      wrapper.removeChild(todoListBox)
-    })
+    btnAll.addEventListener("click", () => {
+      if (todoListBox.parentNode) {
+        todoListBox.parentNode.removeChild(todoListBox);
+
+        // 삭제와 동시에 페이지 다시 로딩
+        // list가 지워져서 새로 입력이 안되서 item들만 지우고 싶은데 복잡해져서
+        // 그냥 재부팅을 선택
+        location.reload(); 
+      }
+    });
 
     // item bot top
     divEl_itemTop.classList.add("todo-item-top");
@@ -66,7 +73,9 @@ function createTodo(e) {
 
     // todo 단일 삭제 ✔️
     btnEl.addEventListener("click", () => {
-      todoListBox.removeChild(divEl_item);
+      if (confirm("정말 삭제하시겠습니까?")) {
+        todoListBox.removeChild(divEl_item);
+      }
     });
 
     // title
