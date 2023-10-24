@@ -5,8 +5,6 @@ const inputBtn = document.querySelector(".todo-input-btn");
 const todoListBox = document.querySelector(".todo-list");
 const todoItemBox = document.querySelector(".todo-item");
 
-const delTodoAllBtn = document.querySelector(".all-delete");
-
 // key 값
 const TODOLIST = "todoList";
 let todoList = [];
@@ -21,6 +19,7 @@ function saveTodo(titleInputVal, memoInputVal) {
   if (titleInputVal.trim() !== "" && memoInputVal.trim() !== "") {
     const todoObj = {
       id: (id += 1),
+      completed: false, // false_진행중, true_완료
       title: titleInputVal,
       memo: memoInputVal,
     };
@@ -33,9 +32,10 @@ function saveTodo(titleInputVal, memoInputVal) {
 function createTodo() {
   const titleInputVal = titleInput.value;
   const memoInputVal = memoInput.value;
+  const completedVal = false;
 
-  paintTodo(titleInputVal, memoInputVal);
-  saveTodo(titleInputVal, memoInputVal);
+  paintTodo(titleInputVal, memoInputVal, completedVal);
+  saveTodo(titleInputVal, memoInputVal, completedVal);
 }
 
 function loadTodoList() {
@@ -45,14 +45,36 @@ function loadTodoList() {
     for (let todo of parsedTodoList) {
       const title = todo.title;
       const memo = todo.memo;
-      paintTodo(title, memo);
-      saveTodo(title, memo);
+      const complete = todo.completed;
+      paintTodo(title, memo, complete);
+      saveTodo(title, memo, complete);
+    }
+  }
+}
+
+// 전체 todo 삭제
+function delTodoAll() {
+  const allTodoItem = document.querySelectorAll(".todo-item");
+  // console.log(todoListBox.innerText);
+  // console.log(todoListBox.innerHTML);
+
+  // 주석으로 해도 있는걸로 인식해서 html을 수정했더니 원하는대로 작동!
+  if (todoListBox.innerText === "") {
+    alert("삭제할 목록이 없습니다.");
+  } else {
+    // console.log(allTodoItem);
+    if (confirm("정말 삭제하시겠습니까?")) {
+      allTodoItem.forEach((item) => {
+        item.remove();
+      });
+      alert("삭제되었습니다.");
+      localStorage.clear();
     }
   }
 }
 
 // todo를 웹 상에 나타내어 주기
-function paintTodo(titleInputVal, memoInputVal) {
+function paintTodo(titleInputVal, memoInputVal, completedVal) {
   // 날짜구하기
   let today = new Date();
   let year = today.getFullYear(); // 년도
@@ -108,25 +130,39 @@ function paintTodo(titleInputVal, memoInputVal) {
     divEl_title.classList.add("todo-title");
     divEl_title.innerText = titleInputVal;
     divEl_item.appendChild(divEl_title);
+    // title 더블 클릭시 상태전환
+    divEl_title.addEventListener("dblclick", () => {
+      completedVal = !completedVal;
+
+      if (completedVal) {
+        completeTodo();
+      } else {
+        notCompletedTodo();
+      }
+
+      // 바뀐 상태를 저장
+      saveTodoList();
+    });
+
+    function completeTodo() {
+      // false
+      divEl_item.style.border = "2px solid black";
+      divEl_title.style.border = "2px solid black";
+      divEl_title.style.textDecoration = "line-through";
+      divEl_memo.style.border = "2px solid black";
+    }
+    function notCompletedTodo() {
+      // true
+      divEl_item.style.border = "3px solid rgb(221, 111, 8)";
+      divEl_title.style.border = "2px solid rgb(129, 189, 137)";
+      divEl_title.style.textDecoration = "none";
+      divEl_memo.style.border = "2px solid rgb(129, 189, 137)";
+    }
 
     // memo
     divEl_memo.classList.add("todo-memo");
     divEl_memo.innerText = memoInputVal;
     divEl_item.appendChild(divEl_memo);
-
-    // 전체 todo 삭제
-    delTodoAllBtn.addEventListener("click", () => {
-      const allTodoItem = document.querySelectorAll(".todo-item");
-      // console.log(allTodoItem);
-      allTodoItem.forEach((item) => {
-        item.remove();
-      });
-      // todoList 배열을 비움
-      todoList = [];
-
-      // 비워진 todoList를 저장
-      saveTodoList();
-    });
 
     titleInput.value = "";
     memoInput.value = "";
