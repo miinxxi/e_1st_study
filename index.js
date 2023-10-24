@@ -18,13 +18,15 @@ function saveTodoList() {
 
 // todo를 localStorage에 저장
 function saveTodo(titleInputVal, memoInputVal) {
-  const todoObj = {
-    id: (id += 1),
-    title: titleInputVal,
-    memo: memoInputVal,
-  };
-  todoList.push(todoObj);
-  saveTodoList();
+  if (titleInputVal.trim() !== "" && memoInputVal.trim() !== "") {
+    const todoObj = {
+      id: (id += 1),
+      title: titleInputVal,
+      memo: memoInputVal,
+    };
+    todoList.push(todoObj);
+    saveTodoList();
+  }
 }
 
 // todo 값을 받아오기
@@ -34,9 +36,6 @@ function createTodo() {
 
   paintTodo(titleInputVal, memoInputVal);
   saveTodo(titleInputVal, memoInputVal);
-
-  titleInput.value = "";
-  memoInput.value = "";
 }
 
 function loadTodoList() {
@@ -67,47 +66,71 @@ function paintTodo(titleInputVal, memoInputVal) {
   const divEl_title = document.createElement("div"); // title
   const divEl_memo = document.createElement("div"); // memo
 
-  // item box
-  divEl_item.classList.add("todo-item");
-  todoListBox.appendChild(divEl_item);
-  divEl_item.id = todoList.length + 1;
+  if (titleInputVal === "" && memoInputVal === "") {
+    alert("TODO를 입력하세요.");
+  } else if (titleInputVal === "") {
+    alert("할 일을 입력하세요.");
+  } else if (memoInputVal === "") {
+    alert("메모를 남겨주세요");
+  } else {
+    // item box
+    divEl_item.classList.add("todo-item");
+    todoListBox.appendChild(divEl_item);
+    divEl_item.id = todoList.length + 1;
 
+    // item bot top
+    divEl_itemTop.classList.add("todo-item-top");
+    divEl_item.appendChild(divEl_itemTop);
 
-  // item bot top
-  divEl_itemTop.classList.add("todo-item-top");
-  divEl_item.appendChild(divEl_itemTop);
+    // date
+    dateEl.classList.add("todo-create-date");
+    dateEl.innerText = `${year}-${month}-${date}`;
+    divEl_itemTop.appendChild(dateEl);
 
-  // date
-  dateEl.classList.add("todo-create-date");
-  dateEl.innerText = `${year}-${month}-${date}`;
-  divEl_itemTop.appendChild(dateEl);
+    // trash btn
+    btnEl.classList.add("element-delete");
+    btnEl.textContent = "🗑️";
+    divEl_itemTop.appendChild(btnEl);
+    btnEl.addEventListener("click", () => {
+      if (confirm("정말 삭제하시겠습니까?")) {
+        todoListBox.removeChild(divEl_item);
+        // console.log(todoListBox);
+        // console.log(divEl_item);
+        // console.log(divEl_item.id);
+        // console.log(todoList);
 
-  // trash btn
-  btnEl.classList.add("element-delete");
-  btnEl.textContent = "🗑️";
-  divEl_itemTop.appendChild(btnEl);
-  btnEl.addEventListener("click", () => {
-    if (confirm("정말 삭제하시겠습니까?")) {
-      todoListBox.removeChild(divEl_item);
-      // console.log(todoListBox);
-      // console.log(divEl_item);
-      // console.log(divEl_item.id);
-      // console.log(todoList);
+        todoList = todoList.filter((todo) => todo.id !== Number(divEl_item.id));
+        saveTodoList();
+      }
+    });
 
-      todoList = todoList.filter((todo) => todo.id !== Number(divEl_item.id));
+    // title
+    divEl_title.classList.add("todo-title");
+    divEl_title.innerText = titleInputVal;
+    divEl_item.appendChild(divEl_title);
+
+    // memo
+    divEl_memo.classList.add("todo-memo");
+    divEl_memo.innerText = memoInputVal;
+    divEl_item.appendChild(divEl_memo);
+
+    // 전체 todo 삭제
+    delTodoAllBtn.addEventListener("click", () => {
+      const allTodoItem = document.querySelectorAll(".todo-item");
+      // console.log(allTodoItem);
+      allTodoItem.forEach((item) => {
+        item.remove();
+      });
+      // todoList 배열을 비움
+      todoList = [];
+
+      // 비워진 todoList를 저장
       saveTodoList();
-    }
-  });
+    });
 
-  // title
-  divEl_title.classList.add("todo-title");
-  divEl_title.innerText = titleInputVal;
-  divEl_item.appendChild(divEl_title);
-
-  // memo
-  divEl_memo.classList.add("todo-memo");
-  divEl_memo.innerText = memoInputVal;
-  divEl_item.appendChild(divEl_memo);
+    titleInput.value = "";
+    memoInput.value = "";
+  }
 }
 
 // inputBtn.addEventListener("click", createTodo)을 함수로 바꿈
@@ -116,6 +139,3 @@ function init() {
   inputBtn.addEventListener("click", createTodo);
 }
 init(); // 호출까지 해줘야 함_따로 부르는 곳이 없으니까
-
-// 전체 todo 삭제
-// delTodoAllBtn.addEventListener("click", delTodoAll);
