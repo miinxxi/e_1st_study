@@ -12,6 +12,31 @@ const TODOLIST = "todoList";
 let todoList = [];
 let id = 0;
 
+// TODO 항목의 completed 상태에 따라 스타일을 설정⭐
+function setTodoStyles(todoItem) {
+  const divEl_item = document.querySelector(`div[id="${todoItem.id}"]`);
+  const divEl_title = divEl_item.querySelector(".todo-title");
+  const divEl_memo = divEl_item.querySelector(".todo-memo");
+
+  if (todoItem.completed) {
+    completeTodo(divEl_item, divEl_title, divEl_memo);
+  } else {
+    notCompletedTodo(divEl_item, divEl_title, divEl_memo);
+  }
+}
+
+// 페이지 로드 시 로컬 스토리지에서 TODO 항목 상태를 불러와 스타일 설정⭐
+function loadTodoStylesFromLocalStorage() {
+  const loadedTodoList = localStorage.getItem(TODOLIST);
+  if (loadedTodoList !== null) {
+    const parsedTodoList = JSON.parse(loadedTodoList);
+
+    for (let todoItem of parsedTodoList) {
+      setTodoStyles(todoItem);
+    }
+  }
+}
+
 // todo 값을 받아오기
 function createTodo() {
   const titleInputVal = titleInput.value;
@@ -52,31 +77,6 @@ function loadTodoList() {
       const complete = todo.completed;
       paintTodo(title, memo, complete);
       saveTodo(title, memo, complete);
-    }
-  }
-}
-
-// TODO 항목의 completed 상태에 따라 스타일을 설정⭐
-function setTodoStyles(todoItem) {
-  const divEl_item = document.querySelector(`div[id="${todoItem.id}"]`);
-  const divEl_title = divEl_item.querySelector(".todo-title");
-  const divEl_memo = divEl_item.querySelector(".todo-memo");
-
-  if (todoItem.completed) {
-    completeTodo(divEl_item, divEl_title, divEl_memo);
-  } else {
-    notCompletedTodo(divEl_item, divEl_title, divEl_memo);
-  }
-}
-
-// 페이지 로드 시 로컬 스토리지에서 TODO 항목 상태를 불러와 스타일 설정⭐
-function loadTodoStylesFromLocalStorage() {
-  const loadedTodoList = localStorage.getItem(TODOLIST);
-  if (loadedTodoList !== null) {
-    const parsedTodoList = JSON.parse(loadedTodoList);
-
-    for (let todoItem of parsedTodoList) {
-      setTodoStyles(todoItem);
     }
   }
 }
@@ -146,10 +146,6 @@ function paintTodo(titleInputVal, memoInputVal, completedVal) {
     btnEl.addEventListener("click", () => {
       if (confirm("정말 삭제하시겠습니까?")) {
         todoListBox.removeChild(divEl_item);
-        // console.log(todoListBox);
-        // console.log(divEl_item);
-        // console.log(divEl_item.id);
-        // console.log(todoList);
         todoList = todoList.filter((todo) => todo.id !== Number(divEl_item.id));
         notCompletedTodoSet();
         saveTodoList();
@@ -194,6 +190,7 @@ function completeTodo(divEl_item, divEl_title, divEl_memo) {
   divEl_title.style.textDecoration = "line-through";
   divEl_memo.style.border = "2px solid black";
 }
+
 // 미완료 todo 스타일
 // 뺴서 매개변수 수여
 function notCompletedTodo(divEl_item, divEl_title, divEl_memo) {
@@ -227,25 +224,25 @@ function completeTodoAll() {
   });
   saveTodoList();
 }
-// inputBtn.addEventListener("click", createTodo)을 함수로 바꿈
-function init() {
-  loadTodoList(); // local Storage에 todo가 존재하는지 확인
-  inputBtn.addEventListener("click", createTodo);
-  notCompletedTodoSet();
-}
-init(); // 호출까지 해줘야 함_따로 부르는 곳이 없으니까
-
 // 완료되지 않은 todoList를 반환
 function notCompletedTodoGet() {
   return todoList.filter((todo) => {
     return todo.completed === false;
   });
 }
-
+// 진행 중인 TODO 개수 업데이트(false)
 function notCompletedTodoSet() {
   const leftTodos = notCompletedTodoGet();
   todoCount.innerHTML = `진행 중인 🥕: ${leftTodos.length}`;
 }
+// inputBtn.addEventListener("click", createTodo)을 함수로 바꿈
+function init() {
+  loadTodoList(); // local Storage에 todo가 존재하는지 확인
+  inputBtn.addEventListener("click", createTodo);
+  notCompletedTodoSet();
+  loadTodoStylesFromLocalStorage();
+}
+init(); // 호출까지 해줘야 함_따로 부르는 곳이 없으니까
 
 // 페이지 로드 시 스타일 설정 적용⭐
 function loadTodoStylesFromLocalStorage() {
