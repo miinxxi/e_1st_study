@@ -20,6 +20,7 @@ function createTodo() {
 
   paintTodo(titleInputVal, memoInputVal, completedVal);
   saveTodo(titleInputVal, memoInputVal, completedVal);
+  notCompletedTodoSet();
 }
 
 function saveTodoList() {
@@ -55,11 +56,34 @@ function loadTodoList() {
   }
 }
 
+// TODO 항목의 completed 상태에 따라 스타일을 설정⭐
+function setTodoStyles(todoItem) {
+  const divEl_item = document.querySelector(`div[id="${todoItem.id}"]`);
+  const divEl_title = divEl_item.querySelector(".todo-title");
+  const divEl_memo = divEl_item.querySelector(".todo-memo");
+
+  if (todoItem.completed) {
+    completeTodo(divEl_item, divEl_title, divEl_memo);
+  } else {
+    notCompletedTodo(divEl_item, divEl_title, divEl_memo);
+  }
+}
+
+// 페이지 로드 시 로컬 스토리지에서 TODO 항목 상태를 불러와 스타일 설정⭐
+function loadTodoStylesFromLocalStorage() {
+  const loadedTodoList = localStorage.getItem(TODOLIST);
+  if (loadedTodoList !== null) {
+    const parsedTodoList = JSON.parse(loadedTodoList);
+
+    for (let todoItem of parsedTodoList) {
+      setTodoStyles(todoItem);
+    }
+  }
+}
+
 // 전체 todo 삭제
 function delTodoAll() {
   const allTodoItem = document.querySelectorAll(".todo-item");
-  // console.log(todoListBox.innerText);
-  // console.log(todoListBox.innerHTML);
 
   // 주석으로 해도 있는걸로 인식해서 html을 수정했더니 원하는대로 작동!
   if (todoListBox.innerText === "") {
@@ -72,6 +96,7 @@ function delTodoAll() {
       });
       alert("삭제되었습니다.");
       localStorage.clear();
+      todoCount.innerText = "진행 중인 🥕: 0";
     }
   }
 }
@@ -126,6 +151,7 @@ function paintTodo(titleInputVal, memoInputVal, completedVal) {
         // console.log(divEl_item.id);
         // console.log(todoList);
         todoList = todoList.filter((todo) => todo.id !== Number(divEl_item.id));
+        notCompletedTodoSet();
         saveTodoList();
       }
     });
@@ -144,31 +170,11 @@ function paintTodo(titleInputVal, memoInputVal, completedVal) {
 
       // TODO 항목의 completed 상태를 토글
       todoItem.completed = !todoItem.completed;
+      notCompletedTodoSet(); // 위치가 중요
 
-      if (todoItem.completed === true) {
-        completeTodo();
-      } else {
-        notCompletedTodo();
-      }
-
+      setTodoStyles(todoItem);
       saveTodoList();
-
     });
-
-    function completeTodo() {
-      // true
-      divEl_item.style.border = "2px solid black";
-      divEl_title.style.border = "2px solid black";
-      divEl_title.style.textDecoration = "line-through";
-      divEl_memo.style.border = "2px solid black";
-    }
-    function notCompletedTodo() {
-      // false
-      divEl_item.style.border = "3px solid rgb(221, 111, 8)";
-      divEl_title.style.border = "2px solid rgb(129, 189, 137)";
-      divEl_title.style.textDecoration = "none";
-      divEl_memo.style.border = "2px solid rgb(129, 189, 137)";
-    }
 
     // memo
     divEl_memo.classList.add("todo-memo");
@@ -179,7 +185,48 @@ function paintTodo(titleInputVal, memoInputVal, completedVal) {
     memoInput.value = "";
   }
 }
+// 완료 todo 스타일
+// 뺴서 매개변수 수여
+function completeTodo(divEl_item, divEl_title, divEl_memo) {
+  // true
+  divEl_item.style.border = "2px solid black";
+  divEl_title.style.border = "2px solid black";
+  divEl_title.style.textDecoration = "line-through";
+  divEl_memo.style.border = "2px solid black";
+}
+// 미완료 todo 스타일
+// 뺴서 매개변수 수여
+function notCompletedTodo(divEl_item, divEl_title, divEl_memo) {
+  // false
+  divEl_item.style.border = "3px solid rgb(221, 111, 8)";
+  divEl_title.style.border = "2px solid rgb(129, 189, 137)";
+  divEl_title.style.textDecoration = "none";
+  divEl_memo.style.border = "2px solid rgb(129, 189, 137)";
+}
 
+// 전체로 보여줄 미완료 todo 스타일 설정⭐
+function notCompletedTodoAll() {
+  const allTodoItems = document.querySelectorAll(".todo-item");
+  allTodoItems.forEach((item) => {
+    const itemId = Number(item.id);
+    const todoItem = todoList.find((todo) => todo.id === itemId);
+    todoItem.completed = false;
+    setTodoStyles(todoItem);
+  });
+  saveTodoList();
+}
+
+// 전체로 보여줄 완료된 todo 스타일 설정⭐
+function completeTodoAll() {
+  const allTodoItems = document.querySelectorAll(".todo-item");
+  allTodoItems.forEach((item) => {
+    const itemId = Number(item.id);
+    const todoItem = todoList.find((todo) => todo.id === itemId);
+    todoItem.completed = true;
+    setTodoStyles(todoItem);
+  });
+  saveTodoList();
+}
 // inputBtn.addEventListener("click", createTodo)을 함수로 바꿈
 function init() {
   loadTodoList(); // local Storage에 todo가 존재하는지 확인
@@ -200,4 +247,9 @@ function notCompletedTodoSet() {
   todoCount.innerHTML = `진행 중인 🥕: ${leftTodos.length}`;
 }
 
-// 진행 중인 TODO: 0
+// 페이지 로드 시 스타일 설정 적용⭐
+function loadTodoStylesFromLocalStorage() {
+  for (let todoItem of todoList) {
+    setTodoStyles(todoItem);
+  }
+}
