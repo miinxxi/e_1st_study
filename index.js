@@ -156,8 +156,8 @@ function paintTodo(titleInputVal, memoInputVal, completedVal) {
     divEl_title.classList.add("todo-title");
     divEl_title.innerText = titleInputVal;
     divEl_item.appendChild(divEl_title);
-    // title 더블 클릭시 상태전환
-    divEl_title.addEventListener("dblclick", () => {
+    // todo 더블 클릭시 상태전환
+    divEl_item.addEventListener("dblclick", () => {
       // 해당 TODO 항목의 ID를 가져옴
       const itemId = Number(divEl_item.id);
 

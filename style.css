@@ -107,7 +107,7 @@ h1 {
   flex-direction: column;
   justify-content: center;
   gap: 10px;
-  width: 150px;
+  width: 250px;
 }
 .all-delete {
   cursor: pointer;
@@ -118,4 +118,19 @@ h1 {
 .todoCount {
   width: 150px;
   text-align: center;
+  font-size: 20px;
+  margin: auto;
+}
+
+.notice{
+  width: fit-content;
+  text-align: center;
+  margin: auto;
+  color: rgb(150, 148, 148);
+
+  animation: blink;   
+  animation-duration: 10s;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-in-out;
+  animation-direction: alternate;
 }
